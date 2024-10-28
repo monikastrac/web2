@@ -1,26 +1,46 @@
-import logo from './logo.svg';
-import { Auth0Provider } from '@auth0/auth0-react';
-import './App.css';
+import React, { useEffect, useState } from 'react';
+import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
+import { useAuth0 } from '@auth0/auth0-react';
+import { collection, getDocs } from 'firebase/firestore';
+import { db } from './firebase';
+import TicketGenerator from './TicketGenerator';
+import TicketDetails from './TicketDetails';
+import LogoutButton from './LogoutButton';
 
-function App() {
+const App = () => {
+  const { isAuthenticated, user } = useAuth0();
+  const [ticketCount, setTicketCount] = useState(0);
+
+  // Dohvati broj ulaznica iz Firestore baze
+  useEffect(() => {
+    const fetchTicketCount = async () => {
+      const ticketsRef = collection(db, 'tickets');
+      const snapshot = await getDocs(ticketsRef);
+      setTicketCount(snapshot.size); // Postavlja broj ulaznica
+    };
+    fetchTicketCount();
+  }, []);
+
   return (
-    <div className="App">
-      <header className="App-header">
-        <img src={logo} className="App-logo" alt="logo" />
-        <p>
-          Edit <code>src/App.js</code> and save to reload.
-        </p>
-        <a
-          className="App-link"
-          href="https://reactjs.org"
-          target="_blank"
-          rel="noopener noreferrer"
-        >
-          Learn React
-        </a>
-      </header>
-    </div>
+    <Router>
+      <div className="App">
+        <header>
+          {isAuthenticated && <p>Pozdrav, {user.name || user.email}!</p>}
+          <LogoutButton />
+        </header>
+        <h2>Ukupan broj generiranih ulaznica: {ticketCount}</h2>
+        <Routes>
+          <Route path="/" element={<TicketGenerator />} />
+          <Route
+            path="/ticket/:id"
+            element={
+              <TicketDetails />
+            }
+          />
+        </Routes>
+      </div>
+    </Router>
   );
-}
+};
 
 export default App;
