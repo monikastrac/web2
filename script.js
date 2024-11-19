@@ -76,8 +76,10 @@ function drawBall() {
 function drawScore() {
   ctx.font = '20px Arial';
   ctx.fillStyle = 'white';
-  ctx.fillText(`Score: ${score}`, canvas.width - 120, 30);
+  ctx.fillText(`Score: ${score}`, canvas.width - 150, 30);
+  ctx.fillText(`Best: ${getBestScore()}`, canvas.width - 150, 60);
 }
+
 
 function sudar() {
   // Loptica i cigle
@@ -111,16 +113,31 @@ function updateGame() {
   ballY += ballDY;
 
   if (ballY - ballRadius > canvas.height) {
+    saveBestScore(score);
     alert('GAME OVER');
     document.location.reload();
   }
   if (bricks.every((brick) => brick.destroyed)) {
+    saveBestScore(score);
     alert('Win!');
     document.location.reload();
   }
 
   sudar();
 }
+
+function saveBestScore(score) {
+  const bestScore = localStorage.getItem('bestScore');
+  if (!bestScore || score > parseInt(bestScore, 10)) {
+    localStorage.setItem('bestScore', score.toString());
+  }
+}
+
+function getBestScore() {
+  const bestScore = localStorage.getItem('bestScore');
+  return bestScore ? parseInt(bestScore, 10) : 0;
+}
+
 
 function render() {
   ctx.clearRect(0, 0, canvas.width, canvas.height);
