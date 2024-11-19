@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Breakout Game</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+  <form id="configForm">
+    <label>
+      Broj cigli po redu:
+      <input type="number" id="brickCols" value="6" min="1">
+    </label>
+    <label>
+      Broj redova cigli:
+      <input type="number" id="brickRows" value="5" min="1">
+    </label>
+    <label>
+      Brzina loptice:
+      <input type="number" id="ballSpeed" value="2" min="1">
+    </label>
+    <button type="submit">Pokreni igru</button>
+  </form>
+  <canvas id="gameCanvas"></canvas>
+  <script src="script.js"></script>
+</body>
+</html>
